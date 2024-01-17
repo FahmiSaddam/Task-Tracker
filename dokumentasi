@@ -1,0 +1,78 @@
+Dokumentasi untuk aplikasi "Task Tracker App":
+TodoApp adalah aplikasi pelacakan tugas yang memungkinkan pengguna untuk menambahkan, mengedit, dan menghapus tugas. Aplikasi ini dibangun dengan menggunakan PyQt6 untuk antarmuka pengguna dan MySQL Connector untuk koneksi ke database MySQL.
+Fitur Utama:
+- Menambahkan Tugas Baru: Pengguna dapat menambahkan tugas baru dengan nama, detail, tanggal masuk, dan tanggal terakhir diperbarui.
+ 
+- Mengedit Tugas yang Ada: Memungkinkan pengguna untuk mengedit informasi tugas yang sudah ada.
+ 
+- Menghapus Tugas: Pengguna dapat menghapus tugas yang dipilih dari daftar.
+ 
+- Pencarian Tugas Berdasarkan Nama: Fitur pencarian memungkinkan pengguna untuk mencari tugas berdasarkan nama.
+ 
+- Pelacakan Tanggal Masuk dan Tanggal Terakhir Diperbarui untuk Setiap Tugas: Aplikasi mencatat tanggal masuk dan tanggal terakhir diperbarui untuk setiap tugas. 
+- Pemeriksaan Tugas yang Terlewat: Aplikasi secara otomatis memeriksa dan menghapus tugas yang sudah melewati batas waktu tertentu.
+
+Komponen Utama:
+- `QMainWindow`: Merupakan jendela utama aplikasi.
+- `QLineEdit` dan `QTextEdit`: Digunakan untuk memasukkan nama, detail tugas, serta menampilkan informasi tugas.
+- `QPushButton`: Tombol untuk menambah, mengedit, dan menghapus tugas.
+- `QTreeView`: Menampilkan daftar tugas dalam format tabel.
+- `QCalendarWidget`: Digunakan untuk memilih tanggal masuk dan tanggal terakhir tugas.
+- `QStandardItemModel` dan `QStandardItem`: Model untuk menyimpan data tugas dalam QTreeView.
+
+
+Struktur Kode:
+1.	Koneksi Database: Membuat dan mengelola koneksi ke database MySQL.
+2.	Antarmuka Pengguna: Membangun antarmuka aplikasi menggunakan PyQt6.
+3.	Manajemen Tugas: Menambahkan, mengedit, dan menghapus tugas dalam database dan tampilan QTreeView.
+4. Pemeriksaan Tugas Terlewat: Memeriksa dan menghapus tugas yang sudah melewati batas waktu tertentu dari database dan tampilan QTreeView.
+
+Implementasi Fungsi Utama:
+
+- `set_app_size()`: Mengatur ukuran aplikasi berdasarkan ukuran layar.
+- `search_task()`: Mencari tugas berdasarkan teks yang dimasukkan pengguna.
+- `search_task_auto()`: Mencari tugas secara otomatis saat teks pencarian berubah atau kosong.
+- `create_treeview_model()`: Membuat model QTreeView untuk menampilkan daftar tugas.
+- `add_treeview_item()`: Menambahkan item tugas ke dalam QTreeView.
+- `populate_treeview_from_db()`: Memuat daftar tugas dari database ke dalam QTreeView.
+- `treeview_item_clicked()`: Menangani klik item pada QTreeView untuk pengeditan langsung.
+- `check_overdue_tasks()`: Memeriksa dan menghapus tugas yang terlewat dari database dan QTreeView.
+- `add_task()`: Menambahkan tugas baru ke dalam database dan QTreeView.
+- `delete_task()`: Menghapus tugas yang dipilih dari database dan QTreeView.
+- `edit_task()`: Mengedit tugas yang dipilih di dalam database dan QTreeView.
+
+Catatan Tambahan:
+- Pastikan MySQL telah diinstal dan database telah dibuat sebelum menggunakan aplikasi.
+
+Struktur database yang sesuai untuk kode tersebut dapat dijelaskan sebagai berikut:
+SQL :
+CREATE TABLE tasktracker (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nama_tugas VARCHAR(255) NOT NULL,
+    detail_tugas TEXT,
+    tanggal_masuk DATE,
+    tanggal_terakhir DATE
+);
+Penjelasan struktur tabel:
+1. `id`: Kolom ini digunakan sebagai kunci utama (primary key) dengan tipe data INTEGER yang akan otomatis bertambah nilainya (AUTO_INCREMENT).
+2. `nama_tugas`: Kolom ini menyimpan nama tugas dengan tipe data VARCHAR(255) dan tidak boleh NULL.
+3. `detail_tugas`: Kolom ini menyimpan detail tugas dengan tipe data TEXT (bisa menyimpan teks panjang).
+4. `tanggal_masuk`: Kolom ini menyimpan tanggal masuk tugas dengan tipe data DATE.
+5. `tanggal_terakhir`: Kolom ini menyimpan tanggal terakhir diperbarui tugas dengan tipe data DATE.
+
+Pastikan bahwa kolom-kolom yang sesuai dengan data yang Anda simpan dalam aplikasi. Selain itu, sesuaikan juga tipe data kolom dan panjangnya sesuai kebutuhan aplikasi Anda. Setelah membuat tabel dengan struktur tersebut, Anda dapat menggunakan database MySQL Anda untuk mengintegrasikannya dengan kode Python yang telah diberikan.
+
+Dokumentasi ini memberikan gambaran umum tentang struktur, fitur, dan implementasi kunci dari aplikasi TodoApp menggunakan PyQt6 dan MySQL Connector. Dokumen ini dapat diperluas dengan menambahkan detail tentang fungsi tambahan, logika bisnis, atau informasi spesifik lainnya terkait aplikasi.Penggunaan Aplikasi
+1. Menambah Tugas:
+   - Masukkan nama tugas, detail tugas, tanggal masuk, dan tanggal terakhir diperbarui.
+   - Klik tombol "Tambah Tugas" untuk menyimpan tugas.
+
+2.  Edit Tugas:
+   - Pilih tugas yang ingin diedit.
+   - Klik tombol "Edit Tugas" untuk membuka jendela edit.
+   - Ubah informasi tugas yang diinginkan dan klik "Simpan" untuk menyimpan perubahan.
+
+3.  Hapus Tugas:
+   - Pilih tugas yang ingin dihapus.
+   - Klik tombol "Hapus Tugas" untuk menghapus tugas dari daftar.
+
