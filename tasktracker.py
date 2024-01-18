@@ -39,6 +39,8 @@ class TodoApp(QMainWindow):
         self.todo_treeview = QTreeView(self)
         self.todo_treeview.setModel(self.treeview_model)
         self.todo_treeview.header().setStretchLastSection(True)
+        
+        self.todo_treeview.setEditTriggers(QTreeView.EditTrigger.NoEditTriggers)
 
         self.delete_task_button = QPushButton("Hapus Tugas", self)
         self.delete_task_button.clicked.connect(self.delete_task)
@@ -155,7 +157,7 @@ class TodoApp(QMainWindow):
     def create_treeview_model(self):
         self.treeview_model = QStandardItemModel()
         self.treeview_model.setHorizontalHeaderLabels(['Tugas', 'Detail', 'Tanggal Masuk Tugas', 'Tanggal Terakhir Dikumpulkan'])
-
+    
     def add_treeview_item(self, task, details, entry_date, last_updated):
         model = self.todo_treeview.model()
         item_task = QStandardItem(task)
@@ -168,10 +170,9 @@ class TodoApp(QMainWindow):
         item_last_updated.setEditable(False)
         model.appendRow([item_task, item_details, item_entry_date, item_last_updated])
 
-        # Menyesuaikan lebar kolom agar konten terlihat sempurna
+        # Set initial column widths
         for column in range(model.columnCount()):
-            self.todo_treeview.resizeColumnToContents(column)
-
+            self.todo_treeview.setColumnWidth(column, 150)  # Adjust the width based on your preference
 
     def populate_treeview_from_db(self):
         sql = "SELECT nama_tugas, detail_tugas, tanggal_masuk, tanggal_terakhir FROM tasktracker"
@@ -249,23 +250,27 @@ class TodoApp(QMainWindow):
 
     def delete_task(self):
         selected_indexes = self.todo_treeview.selectedIndexes()
-        if selected_indexes:
-            row = selected_indexes[0].row()
-            task = self.todo_treeview.model().item(row, 0).text()
+        if not selected_indexes:
+            QMessageBox.warning(self, "Peringatan", "Pilih sebuah tugas untuk dihapus.")
+            return
 
-            sql = "DELETE FROM tasktracker WHERE nama_tugas = %s"
-            try:
-                self.cursor.execute(sql, (task,))
-                self.db.commit()
-                del self.task_times[task]
-                self.todo_treeview.model().removeRow(row)  # Menghapus baris dari QTreeView setelah dihapus dari database
-                QMessageBox.information(self, "Informasi", "Tugas berhasil dihapus dari database.")
-            except Exception as e:
-                self.db.rollback()
-                QMessageBox.warning(self, "Peringatan", f"Terjadi kesalahan: {str(e)}")
-        
+        row = selected_indexes[0].row()
+        task = self.todo_treeview.model().item(row, 0).text()
+
+        sql = "DELETE FROM tasktracker WHERE nama_tugas = %s"
+        try:
+            self.cursor.execute(sql, (task,))
+            self.db.commit()
+            del self.task_times[task]
+            self.todo_treeview.model().removeRow(row)  # Menghapus baris dari QTreeView setelah dihapus dari database
+            QMessageBox.information(self, "Informasi", "Tugas berhasil dihapus dari database.")
+        except Exception as e:
+            self.db.rollback()
+            QMessageBox.warning(self, "Peringatan", f"Terjadi kesalahan: {str(e)}")
+
         # Kembali memuat ulang data dari database setelah penghapusan
         self.populate_treeview_from_db()
+
 
     def edit_task(self):
         selected_indexes = self.todo_treeview.selectedIndexes()
